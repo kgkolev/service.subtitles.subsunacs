@@ -1,5 +1,8 @@
+1.0.2
+- detect season/episode of movies with no year in the name
+
 1.0.1
-- enable subltile archive directory traversal
+- enable subtitle archive directory traversal
 
 1.0.0
 - initial version against latest version of subsunacs site.

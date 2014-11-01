@@ -147,14 +147,24 @@ if params['action'] == 'search' or params['action'] == 'manualsearch':
     item['episode'] = item['episode'][-1:]
 	
   if len(item['tvshow']) == 0:
+    print ('title: %s' % item['title'])
     match = re.search("^(.*?)(?:[Ss](\d{1,2})[Ee](\d{1,2})|(\d{1,2})[Xx](\d{1,2})).*$", item['title'])
     if match:
       ttl, yr = xbmc.getCleanMovieTitle(item['title'])
       mttl = match.group(1).replace('.',' ').strip()
       item['tvshow'] = mttl if len(ttl) > len(mttl) else ttl
-      #print ("%s %s %s %s" % (match.group(2), match.group(3), match.group(4), match.group(5)))
+      print ("%s %s %s %s" % (match.group(2), match.group(3), match.group(4), match.group(5)))
       item['season'] = int(match.group(4) if match.group(4) else match.group(2))
       item['episode'] = int(match.group(5) if match.group(5) else match.group(3))
+    else:
+      #last resort
+      if len(str(item['year'])) == 0 and xbmc.getCleanMovieTitle(item['title'])[1] == '':
+        match = re.search('^(.*?)(\d{1})(\d{1,2}).*$', item['title'])
+        if match:
+          item['tvshow'] = match.group(1).replace('.',' ').strip()
+          item['season'] = int(match.group(2))
+          item['episode'] = int(match.group(3))
+    #print ('tvshow: %s season: %s episode: %s' % (item['tvshow'], item['season'],item['episode']))
 
   if ( item['file_original_path'].find("http") > -1 ):
     item['temp'] = True
