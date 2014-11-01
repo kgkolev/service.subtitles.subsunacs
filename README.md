@@ -5,9 +5,9 @@ Overview
 
 Currently the only supported language is Bulgarian.
 
-The plugin will retreive raiting information as well downloads count, however the site does not maintain metadata information for synchronization or hearing impared features.
+The plugin will retrieve raiting information as well downloads count, however the site does not maintain metadata information for synchronization or hearing impaired features.
 
-Since the file storage of subsunacs.net is a RAR the first .srt/.sub file availabile will be used.
+Since the file storage of subsunacs.net is a RAR the first .srt/.sub file available within will be used.
 
 Dependencies
 ---
