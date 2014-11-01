@@ -1,0 +1,2 @@
+1.0.0
+- initial version against latest version of subsunacs site.
