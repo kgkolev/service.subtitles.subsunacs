@@ -1,2 +1,5 @@
+1.0.1
+- enable subltile archive directory traversal
+
 1.0.0
 - initial version against latest version of subsunacs site.

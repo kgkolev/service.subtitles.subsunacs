@@ -58,11 +58,22 @@ def Search( item ):
 
       xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=url,listitem=listitem,isFolder=False)
 
+def walk_dir(dir):
+  exts = [".srt", ".sub", ".smi", ".ssa", ".ass" ]
+  files_list = []
+  print ('dir: %s' % dir)
+  
+  for subdir in xbmcvfs.listdir(dir)[0]:
+    print ('scanning: %s' % subdir)
+    files_list.extend(walk_dir(os.path.join(dir,subdir)))
+  
+  for file in xbmcvfs.listdir(dir)[1]:
+    if (os.path.splitext(file)[1] in exts):
+      print ('appending %s' % file)
+      files_list.append(os.path.join(dir,file))
+  return files_list
 
 def Download(url,format,stack=False):
-  subtitle_list = []
-  exts = [".srt", ".sub", ".smi", ".ssa", ".ass" ]
-
   destDir = os.path.join(__temp__, str(uuid.uuid4()))
   xbmcvfs.mkdirs(destDir)
   dest = os.path.join(destDir, "%s.%s" % ('subtitles', format))
@@ -70,15 +81,10 @@ def Download(url,format,stack=False):
 
   xbmc.sleep(500)
   xbmc.executebuiltin(('XBMC.Extract("%s","%s")' % (dest,destDir)).encode('utf-8'), True)
-  for file in xbmcvfs.listdir(dest)[1]:
-    #print ("file: %s" % file)
-    if (os.path.splitext(file)[1] in exts):
-      file = os.path.join(destDir, file)
-      subtitle_list.append(file)
+  absSubsList = walk_dir(destDir)
 
-  #print ("subtitle_list [ %s ]" % (str(subtitle_list))) 
-  if len(subtitle_list) and xbmcvfs.exists(subtitle_list[0]):
-    return subtitle_list
+  if len(absSubsList) and xbmcvfs.exists(absSubsList[0]):
+    return absSubsList
 
 def get_params(string=""):
   param=[]
