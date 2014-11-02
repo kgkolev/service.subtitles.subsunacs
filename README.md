@@ -24,8 +24,13 @@ Installation
 
 4. Use XBMC subtitles picker to choose this plugin as service provider during video playback
 
+Troubleshooting
+---
+
+In case of errors downloading an archive on linux, check if the archive contains files in cyrillic. If yes install unrar and it will be used as a workaround.  
+
 License
-----
+---
 
 [GPLv2]
 

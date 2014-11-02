@@ -1,3 +1,6 @@
+1.2.1
+- add year field if found from movie title
+
 1.2.0
 - due to linux posix file naming issues XBMC would extract cyrillic names and mess up the file system. As workaround try to first use unrar command and if not present use XBMC method.
 
