@@ -10,6 +10,9 @@ import xbmcgui,xbmcplugin
 import xbmcvfs
 import uuid
 import re
+import subprocess
+
+unrar_bin = '/usr/bin/unrar'
 
 __addon__ = xbmcaddon.Addon()
 __author__     = __addon__.getAddonInfo('author')
@@ -80,7 +83,13 @@ def Download(url,format,stack=False):
   OSDBServer().download(url, dest)
 
   xbmc.sleep(500)
-  xbmc.executebuiltin(('XBMC.Extract("%s","%s")' % (dest,destDir)).encode('utf-8'), True)
+  #print ('executing: /usr/bin/unrar e -y %s %s' % (dest, destDir))
+  if format == 'rar':
+    unrarCode = subprocess.call([unrar_bin, 'e', '-y', dest, destDir+'/'])
+  else:
+    unrarCode = 1
+  if unrarCode != 0:
+    xbmc.executebuiltin(('XBMC.Extract("%s","%s")' % (dest,destDir)).encode('utf-8'), True)
   absSubsList = walk_dir(destDir)
 
   if len(absSubsList) and xbmcvfs.exists(absSubsList[0]):
