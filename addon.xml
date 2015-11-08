@@ -11,7 +11,7 @@
              library="service.py" />
   <extension point="xbmc.addon.metadata">
     <summary lang="en">subsunacs.net</summary>
-    <description lang="en">Search and download subtitles from subsunacs.net</description>
+    <description lang="en">Search and download Bulgarian subtitles from subsunacs.net</description>
     <disclaimer lang="en">This is a hack to pull data from this service. It will most likely stop working when the owners change their web site.</disclaimer>
     <platform>all</platform>
     <license>GNU GENERAL PUBLIC LICENSE. Version 2, June 1991</license>

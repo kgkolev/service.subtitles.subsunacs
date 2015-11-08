@@ -16,8 +16,6 @@ __addon__      = xbmcaddon.Addon()
 __version__    = __addon__.getAddonInfo('version') # Module version
 __scriptname__ = "XBMC Subtitles"
 
-BASE_URL_XMLRPC = u"http://api.opensubtitles.org/xml-rpc"
-
 class OSDBServer:
   def __init__( self, *args, **kwargs ):
     self.search_uri = 'http://subsunacs.net/search.php'
@@ -43,32 +41,38 @@ class OSDBServer:
 
     try:
       soup = self._getSearchResultsSoup(searchParams)
-      #print ("got service response")
+      print ("got service response: %s" % soup)
 
-      for tables in soup.findAll('table', {'class' : 'resTable'}):
-        for details in tables.findAll('a', {'class' : 'tooltip'}):
-          name = details.text.strip()
-          cd = details.findParent("td").findNextSibling('td')
-          ratLink = cd.findNextSibling('td').findNextSibling('td').a
-          if ratLink and ratLink.img:
-            raiting = cd.findNextSibling('td').findNextSibling('td').a.img.get('alt')
-          else:
-            raiting = '0'
-          if details.get('href').startswith('http'):
-            link = details.get('href') 
-          else: 
-            link = ('http://subsunacs.net/%s' % details.get('href'))
-          downloads = cd.findNextSibling('td').findNextSibling('td').findNextSibling('td').findNextSibling('td').findNextSibling('td')
-          subtitles.append({'filename'      : ("DL:%s CD:%s - %s" % (downloads.text,
-                                                cd.text,
-                                                name)),
-                                      'link'          : link,
-                                      'language_name' : lang_name,
-                                      'language_flag' : flag_image,
-                                      'language_code'   : lang_code,
-                                      'rating'        : raiting,
-                                      'format'        : 'rar'
-                                     })
+      for detail in soup.findAll('a', {'class' : 'tooltip'}):
+        name = detail.text.strip()
+        cd = detail.findParent("td").findNextSibling('td')
+        ratLink = cd.findNextSibling('td').findNextSibling('td').a
+        rating = '0'
+        
+        print ('item name:%s cd:%s ratLink:%s' % (name, cd, ratLink))
+        
+        
+        if ratLink and ratLink.img:
+          rating = cd.findNextSibling('td').findNextSibling('td').a.img.get('alt')
+                 
+        if detail.get('href').startswith('http'):
+          link = detail.get('href') 
+        else: 
+          link = ('http://subsunacs.net/%s' % detail.get('href'))
+         
+        print ('item rating:%s link:%s' % (rating, link))
+        
+        downloads = cd.findNextSibling('td').findNextSibling('td').findNextSibling('td').findNextSibling('td').findNextSibling('td')
+        subtitles.append({'filename'      : ("DL:%s CD:%s - %s" % (downloads.text,
+                                              cd.text,
+                                              name)),
+                                    'link'          : link,
+                                    'language_name' : lang_name,
+                                    'language_flag' : flag_image,
+                                    'language_code'   : lang_code,
+                                    'rating'        : rating,
+                                    'format'        : 'rar'
+                                   })
     except Exception, e:
       print("error: %s" % e)
       pass
@@ -88,7 +92,7 @@ class OSDBServer:
 								'u' : '',
 								'g' : '',
 								't' : 'Submit'}
-      #print ("manual search: %s" % searchParams)
+      print ("manual search: %s" % searchParams)
     elif len(item['tvshow']) > 0:
       searchParams = {'m' : ("%s %.2dx%.2d" % (item['tvshow'],
                                                 int(item['season']),
@@ -101,7 +105,7 @@ class OSDBServer:
 								'u' : '',
 								'g' : '',
 								't' : 'Submit'}
-      #print ("tvshow search: %s" % searchParams)
+      print ("tvshow search: %s" % searchParams)
     else:
       if str(item['year']) == "":
         item['title'], item['year'] = xbmc.getCleanMovieTitle(item['title'])
@@ -118,7 +122,7 @@ class OSDBServer:
 								'u' : '',
 								'g' : '',
 								't' : 'Submit'}
-      #print ("title search: %s" % searchParams)
+      print ("title search: %s" % searchParams)
 
     log( __name__ , "Search Parameters [ %s ]" % (str(searchParams))) 
 
@@ -126,6 +130,10 @@ class OSDBServer:
     return result
 
   def download(self, link, dest):
+      self.opener.addheaders = [
+        ('User-agent', ('Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.6 (KHTML, like Gecko) Chrome/20.0.1092.0 Safari/536.6')),
+        ('Referer', link)
+	    ]
       f = self.opener.open(link)
       with open(dest, "wb") as subArch:
         subArch.write(f.read())

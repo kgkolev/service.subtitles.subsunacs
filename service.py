@@ -40,11 +40,11 @@ def Search( item ):
   try:
     search_data = OSDBServer().searchsubtitles(item)
   except:
-    #print( __name__, "failed to connect to service for subtitle search")
+    print( __name__, "failed to connect to service for subtitle search")
     xbmc.executebuiltin((u'Notification(%s,%s)' % (__scriptname__ , __language__(32001))).encode('utf-8'))
     return
 
-  #print(("done searching: %s" % search_data))
+  print(("done searching: %s" % search_data))
   if search_data != None:
     for item_data in search_data:
       listitem = xbmcgui.ListItem(label          = item_data["language_name"],
@@ -83,7 +83,7 @@ def Download(url,format,stack=False):
   OSDBServer().download(url, dest)
 
   xbmc.sleep(500)
-  #print ('executing: /usr/bin/unrar e -y %s %s' % (dest, destDir))
+  print ('executing: /usr/bin/unrar e -y %s %s' % (dest, destDir))
   if format == 'rar':
     unrarCode = subprocess.call([unrar_bin, 'e', '-y', dest, destDir+'/'])
   else:
